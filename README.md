@@ -1,3 +1,2 @@
-# Web Template
+# Film Watchlist
 
-Starter template for vanilla HTML + CSS + JS websites.

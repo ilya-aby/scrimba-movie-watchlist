@@ -1,22 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>PAGE TITLE</title>
+  <title>Movie Watchlist</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Styles and Icons -->
   <link rel="stylesheet" href="style.css">
 
   <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
 </head>
 <body>
-  <header>
-  </header>
-  <main>
-  </main>
-  <footer>
-  </footer>
+  <div id="app-container">
+    <img id="header-background" src="images/header-bg.png" alt="header background">
+    <header>
+      <h1>Find Your Film</h1>
+      <a href="watchlist.html">My Watchlist</a>
+    </header>
+    <main>
+      <form id="search-container">
+        <input id="search-input" type="search" placeholder="Search for a movie">
+        <button id="search-button" type="submit">Search</button>
+      </form>
+      <div id="movies-container"></div>
+    </main>
+  </div>
+  <script src="secrets.env"></script>
   <script type="module" src="main.js"></script>
 </body>
 </html>
