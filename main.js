@@ -1,7 +1,6 @@
 import { getMoviesBySearchTerm } from './api.js';
 import { renderMovies } from './render-movies.js';
 
-const searchButton = document.getElementById('search-button');
 const moviesContainer = document.getElementById('movies-container');
 const searchInput = document.getElementById('search-input');
 

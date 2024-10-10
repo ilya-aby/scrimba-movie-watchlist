@@ -1,4 +1,4 @@
-const API_URL = 'http://www.omdbapi.com/';
+const API_URL = 'https://www.omdbapi.com/';
 
 // Get movies by search term. Since the search endpoint returns only basic movie information,
 // we need to make a second request for each movie to get the full details.
@@ -9,7 +9,7 @@ export async function getMoviesBySearchTerm(searchTerm) {
 
   console.log("Search results:", data);
 
-  if (data.Response === "False" || data.Search.length === 0) {
+  if (data.Response === "False" || !data.Search || data.Search.length === 0) {
     return [];
   }
 
