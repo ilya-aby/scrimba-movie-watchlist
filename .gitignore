@@ -1,0 +1,14 @@
+.idea
+.vscode
+__pycache__
+*.pyc
+*.sw*
+*.log
+/venv
+.DS_Store
+*.json
+*.env
+*.tmp
+*.swp
+/node_modules
+todo.md
