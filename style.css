@@ -25,7 +25,6 @@ header h1 {
 }
 
 header a, .movie-header a {
-  /* display: inline-block; */
   font-weight: 600;
   font-size: 0.75rem;
   text-decoration: none;
@@ -34,6 +33,15 @@ header a, .movie-header a {
 
 header a:hover, .movie-header a:hover {
   opacity: 0.5;
+}
+
+.placeholder-text {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #2E2E2F;
+  display: block;
+  padding: 0px 46px;
+  text-align: center;
 }
 
 .movie-title {
@@ -95,6 +103,14 @@ header {
 
 main {
   width: 100%;
+}
+
+#movies-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
 }
 
 #search-container {
@@ -203,4 +219,7 @@ main {
   opacity: 0.5;
 }
 
-
+#film-reel-icon {
+  width: 70px;
+  height: auto;
+}
