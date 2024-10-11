@@ -92,12 +92,6 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
     let movieDetails;
     let shouldRateLimit = false;
 
-    if (searchTerm && currentSearchTerm !== searchTerm) {
-      console.warn(`Search term changed, stopping render of ${imdbId} to prevent stale results`);
-      console.warn(`${currentSearchTerm} -> ${searchTerm}`);
-      return;
-    }
-
     if (cache[imdbId]) {
       movieDetails = cache[imdbId];
     } else {
@@ -110,13 +104,20 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
       continue;
     }
 
+    // It's possible that the search term changed while we were waiting for our promise to resolve
+    // because the underlying API is flaky and can take a while to respond for certain films
+    if (searchTerm && currentSearchTerm !== searchTerm) {
+      console.warn(`Search term changed, skipping render of ${movieDetails.Title} (${imdbId})`);
+      return;
+    }
+
     // Don't render movies with <50 IMDB votes if the movie year is in the past
     // This eliminates obscure movies w/o eliminating upcoming movies with no ratings
     // We early-terminate the loop to avoid unnecessary requests because the results are sorted by votes
     const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
     const currentYear = new Date().getFullYear();
     if ((isNaN(imdbVotes) || imdbVotes < 50) && parseInt(movieDetails.Year) < currentYear) {
-      console.log(`Skipping movie ${imdbId} due to low IMDB votes and year in the past`);
+      console.info(`Skipping render of ${movieDetails.Title} (${imdbId}) due to low popularity`);
       break;
     }
 

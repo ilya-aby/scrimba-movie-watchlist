@@ -47,5 +47,4 @@ export function renderMovie(movie, isInWatchlist, isLiked) {
         </div>
       </div>
     `;
-
 }
