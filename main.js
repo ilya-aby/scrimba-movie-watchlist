@@ -82,7 +82,7 @@ async function handleSearch(searchTerm) {
     moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
     return;
   }
-  document.querySelector('.spinner').classList.remove('loading');
+
   await renderMoviesFromIDs(imdbIds, searchTerm);
 
   console.log('Search complete');
@@ -105,6 +105,12 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
     if (!movieDetails || !movieDetails.imdbID) {
       console.error(`Skipping movie ${imdbId} due to failed fetch or error response`);
       continue;
+    }
+
+    // Remove the search spinner after at least one movie has been fetched
+    const spinner = document.querySelector('.spinner');
+    if (spinner) {
+      spinner.classList.remove('loading');
     }
 
     // It's possible that the search term changed while we were waiting for our promise to resolve
