@@ -81,7 +81,7 @@ header h1 {
 }
 
 .movie-description {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: #A5A5A5;
 }
@@ -189,7 +189,6 @@ main {
   align-items: flex-start;
   justify-content: space-around;
   gap: 8px;
-  padding-right: 15px;
 }
 
 .movie-header {
@@ -232,6 +231,11 @@ main {
 
 .watchlist-button:hover, .like-button:hover, .top-films-button:hover {
   opacity: 0.5;
+}
+
+/* Reset opacity on tap for mobile */
+.watchlist-button:active, .like-button:active, .top-films-button:active {
+  opacity: 1; 
 }
 
 #header-action-buttons, .movie-action-buttons {
