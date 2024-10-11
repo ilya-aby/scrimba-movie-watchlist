@@ -89,7 +89,7 @@ async function handleSearch(searchTerm) {
 }
 
 async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
-  moviesContainer.classList.remove('empty');
+  
 
   for (const imdbId of imdbIDs) {
     let movieDetails;
@@ -112,6 +112,8 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
     if (spinner) {
       spinner.classList.remove('loading');
     }
+
+    moviesContainer.classList.remove('empty');
 
     // It's possible that the search term changed while we were waiting for our promise to resolve
     // because the underlying API is flaky and can take a while to respond for certain films
