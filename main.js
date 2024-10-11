@@ -1,11 +1,11 @@
 import { getMoviesBySearchTerm } from './api.js';
-import { getMovieDetailsByID } from './api.js';
+import { getMovieDetailsById } from './api.js';
 import { renderMovie } from './render.js';
+import { fetchLists, watchlist, likes, cache, toggleWatchlistStatus, toggleLikeStatus } from './storage.js';
+import { TOP_FILMS } from './top-films.js';
 
 const moviesContainer = document.getElementById('movies-container');
 const searchInput = document.getElementById('search-input');
-let watchlist
-let likes
 
 document.getElementById('search-container').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -16,12 +16,10 @@ document.getElementById('movies-container').addEventListener('click', function(e
   const watchlistButton = e.target.closest('.watchlist-button');
   const likeButton = e.target.closest('.like-button');
   if (watchlistButton) {
-    const imdbID = watchlistButton.dataset.imdbid;
-    handleWatchlistUpdate(imdbID);
+    toggleWatchlistStatus(watchlistButton.dataset.imdbId);
     watchlistButton.classList.toggle('in-watchlist');
   } else if (likeButton) {
-    const imdbID = likeButton.dataset.imdbid;
-    handleLikeUpdate(imdbID);
+    toggleLikeStatus(likeButton.dataset.imdbId);
     likeButton.classList.toggle('in-likes');
   }
 });
@@ -34,33 +32,12 @@ document.getElementById('open-likes').addEventListener('click', function() {
   handleShowLikes();
 });
 
+document.getElementById('open-top-films').addEventListener('click', function() {
+  handleShowTopFilms();
+});
+
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function fetchLists() {
-  watchlist = new Set(JSON.parse(localStorage.getItem('watchlist')) || []);
-  likes = new Set(JSON.parse(localStorage.getItem('likes')) || []);
-}
-
-function handleWatchlistUpdate(imdbID) {
-  if (watchlist.has(imdbID)) {
-    watchlist.delete(imdbID);
-  } else {
-    watchlist.add(imdbID);
-  }
-
-  localStorage.setItem('watchlist', JSON.stringify(Array.from(watchlist)));
-}
-
-function handleLikeUpdate(imdbID) {
-  if (likes.has(imdbID)) {
-    likes.delete(imdbID);
-  } else {
-    likes.add(imdbID);
-  }
-
-  localStorage.setItem('likes', JSON.stringify(Array.from(likes)));
 }
 
 async function handleShowLikes() {
@@ -87,6 +64,11 @@ async function handleShowWatchlist() {
   await renderMoviesFromIDs(Array.from(watchlist).reverse());
 }
 
+async function handleShowTopFilms() {
+  moviesContainer.innerHTML = '';
+  await renderMoviesFromIDs(TOP_FILMS);
+}
+
 async function handleSearch(searchTerm) {
   moviesContainer.innerHTML = '';
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
@@ -103,8 +85,16 @@ async function handleSearch(searchTerm) {
 
 async function renderMoviesFromIDs(imdbIDs) {
   moviesContainer.classList.remove('empty');
-  for (const imdbID of imdbIDs) {
-    const movieDetails = await getMovieDetailsByID(imdbID);
+  for (const imdbId of imdbIDs) {
+    let movieDetails;
+    let shouldRateLimit = false;
+
+    if (cache[imdbId]) {
+      movieDetails = cache[imdbId];
+    } else {
+      movieDetails = await getMovieDetailsById(imdbId);
+      shouldRateLimit = true;
+    }
 
     // Don't render movies with <50 IMDB votes if the movie year is in the past
     // This eliminates obscure movies w/o eliminating upcoming movies with no ratings
@@ -115,11 +105,9 @@ async function renderMoviesFromIDs(imdbIDs) {
       break;
     }
 
-    const isInWatchlist = watchlist.has(imdbID);
-    const isLiked = likes.has(imdbID);
-    const movieHtml = renderMovie(movieDetails, isInWatchlist, isLiked);
+    const movieHtml = renderMovie(movieDetails, watchlist.has(imdbId), likes.has(imdbId));
     moviesContainer.insertAdjacentHTML('beforeend', movieHtml);
-    await delay(100); // Wait between requests to avoid rate limits
+    await delay(shouldRateLimit ? 100 : 0); // Wait between requests to avoid rate limits
   }
 }
 

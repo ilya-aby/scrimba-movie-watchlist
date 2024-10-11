@@ -1,3 +1,5 @@
+import { updateCache } from './storage.js';
+
 const API_URL = 'https://www.omdbapi.com/';
 
 // Get movies by search term. Since the search endpoint returns only basic movie information,
@@ -7,7 +9,7 @@ export async function getMoviesBySearchTerm(searchTerm) {
   const response = await fetch(url);
   const data = await response.json();
 
-  console.log("Search results:", data);
+  console.table("Search results:", data);
 
   if (data.Response === "False" || !data.Search || data.Search.length === 0) {
     return [];
@@ -20,12 +22,15 @@ export async function getMoviesBySearchTerm(searchTerm) {
 }
 
 // Get movie details by IMDB ID
-export async function getMovieDetailsByID(imdbID) {
+// If the movie is in the cache, return it from the cache
+// Otherwise, fetch the movie details from the API and add them to the cache
+export async function getMovieDetailsById(imdbId) {
   try {
-    const url = `${API_URL}?i=${imdbID}&apikey=${API_KEY}`;
+    const url = `${API_URL}?i=${imdbId}&apikey=${API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
     console.log("Movie details:", data);
+    updateCache(imdbId, data);
     return data;
   } catch (error) {
     console.error("Error fetching movie details: ", error);

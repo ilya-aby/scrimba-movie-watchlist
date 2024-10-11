@@ -209,7 +209,7 @@ main {
   gap: 18px;
 }
 
-.watchlist-button, .like-button {
+.watchlist-button, .like-button, .top-films-button {
   font-size: 0.75rem;
   font-weight: 400;
   border: none;
@@ -228,7 +228,7 @@ main {
   color: #f0963a;
 }
 
-.watchlist-button:hover, .like-button:hover {
+.watchlist-button:hover, .like-button:hover, .top-films-button:hover {
   opacity: 0.5;
 }
 
@@ -238,6 +238,15 @@ main {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+}
+
+#header-action-buttons button {
+  padding: 0;
+  width: 24px;
+}
+
+#open-top-films {
+  color: #edc748;
 }
 
 #film-reel-icon {
