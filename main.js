@@ -44,11 +44,21 @@ async function handleSearch(searchTerm) {
 
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
 
+
+  if (searchResults.length === 0) {
+    moviesContainer.classList.add('empty');
+    moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
+    return;
+  }
+
+  moviesContainer.classList.remove('empty');
+
   for (const movie of searchResults) {
     const movieDetails = await getMovieDetailsByID(movie.imdbID);
 
     // Don't render movies with <50 IMDB votes if the movie year is in the past
     // This eliminates obscure movies w/o eliminating upcoming movies with no ratings
+    // We early-terminate the loop to avoid unnecessary requests because the results are sorted by votes
     const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
     const currentYear = new Date().getFullYear();
     if ((isNaN(imdbVotes) || imdbVotes < 50) && parseInt(movieDetails.Year) < currentYear) {
