@@ -27,7 +27,19 @@ export async function getMovieDetailsById(imdbId) {
   try {
     const url = `${API_URL}?imdbId=${imdbId}`;
     const response = await fetch(url);
+
+    if (!response.ok) {
+      console.error(`Network response was not ok: ${response.statusText}`);
+      return null;
+    }
+
     const data = await response.json();
+
+    if (data.errorMessage || data.errorType || data.error) {
+      console.error(`Error fetching movie details for ID ${imdbId}:`, data);
+      return null;
+    }
+
     console.log("Movie details:", data);
     updateCache(imdbId, data);
     return data;

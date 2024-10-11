@@ -106,6 +106,11 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
       shouldRateLimit = true;
     }
 
+    if (!movieDetails || !movieDetails.imdbID) {
+      console.error(`Skipping movie ${imdbId} due to failed fetch or error response`);
+      continue;
+    }
+
     // Don't render movies with <50 IMDB votes if the movie year is in the past
     // This eliminates obscure movies w/o eliminating upcoming movies with no ratings
     // We early-terminate the loop to avoid unnecessary requests because the results are sorted by votes
