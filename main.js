@@ -10,7 +10,8 @@ let currentSearchTerm = '';
 
 document.getElementById('search-container').addEventListener('submit', async function(e) {
   e.preventDefault();
-  await handleSearch(searchInput.value);
+  currentSearchTerm = searchInput.value;
+  await handleSearch(currentSearchTerm);
 });
 
 document.getElementById('movies-container').addEventListener('click', function(e) {
@@ -71,7 +72,6 @@ async function handleShowTopFilms() {
 }
 
 async function handleSearch(searchTerm) {
-  currentSearchTerm = searchTerm;
   moviesContainer.innerHTML = '';
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
   const imdbIds = searchResults.map(movie => movie.imdbID);
@@ -83,6 +83,7 @@ async function handleSearch(searchTerm) {
   }
 
   await renderMoviesFromIDs(imdbIds, searchTerm);
+  console.log('Search complete');
 }
 
 async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
@@ -93,7 +94,7 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
 
     if (searchTerm && currentSearchTerm !== searchTerm) {
       console.log('Search term changed, stopping render');
-      console.log('Current search term:', currentSearchTerm);
+      console.log('Old search term:', currentSearchTerm);
       console.log('New search term:', searchTerm);
       console.log(`${imdbId} not rendered and now aborting`);
       return;
@@ -117,6 +118,7 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
     const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
     const currentYear = new Date().getFullYear();
     if ((isNaN(imdbVotes) || imdbVotes < 50) && parseInt(movieDetails.Year) < currentYear) {
+      console.log(`Skipping movie ${imdbId} due to low IMDB votes and year in the past`);
       break;
     }
 
