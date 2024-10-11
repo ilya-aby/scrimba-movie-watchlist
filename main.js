@@ -82,7 +82,7 @@ async function handleSearch(searchTerm) {
     moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
     return;
   }
-  spinner.classList.remove('loading');
+  document.querySelector('.spinner').classList.remove('loading');
   await renderMoviesFromIDs(imdbIds, searchTerm);
 
   console.log('Search complete');
