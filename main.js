@@ -5,6 +5,7 @@ import { renderMovie } from './render.js';
 const moviesContainer = document.getElementById('movies-container');
 const searchInput = document.getElementById('search-input');
 let watchlist
+let likes
 
 document.getElementById('search-container').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -12,19 +13,38 @@ document.getElementById('search-container').addEventListener('submit', async fun
 });
 
 document.getElementById('movies-container').addEventListener('click', function(e) {
-  if (e.target.classList.contains('watchlist-button')) {
-    const imdbID = e.target.dataset.imdbid;
+  const button = e.target.closest('.watchlist-button');
+  if (button) {
+    const imdbID = button.dataset.imdbid;
     handleWatchlistUpdate(imdbID);
-    e.target.classList.toggle('in-watchlist');
+    button.classList.toggle('in-watchlist');
   }
+});
+
+document.getElementById('movies-container').addEventListener('click', function(e) {
+  const button = e.target.closest('.like-button');
+  if (button) {
+    const imdbID = button.dataset.imdbid;
+    handleLikeUpdate(imdbID);
+    button.classList.toggle('in-likes');
+  }
+});
+
+document.getElementById('open-watchlist').addEventListener('click', function() {
+  handleShowWatchlist();
+});
+
+document.getElementById('open-likes').addEventListener('click', function() {
+  handleShowLikes();
 });
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function fetchWatchlist() {
+function fetchLists() {
   watchlist = new Set(JSON.parse(localStorage.getItem('watchlist')) || []);
+  likes = new Set(JSON.parse(localStorage.getItem('likes')) || []);
 }
 
 function handleWatchlistUpdate(imdbID) {
@@ -34,27 +54,61 @@ function handleWatchlistUpdate(imdbID) {
     watchlist.add(imdbID);
   }
 
-  // Save the updated watchlist
   localStorage.setItem('watchlist', JSON.stringify(Array.from(watchlist)));
 }
 
-async function handleSearch(searchTerm) {
-  // Clear the movies container  
+function handleLikeUpdate(imdbID) {
+  if (likes.has(imdbID)) {
+    likes.delete(imdbID);
+  } else {
+    likes.add(imdbID);
+  }
+
+  localStorage.setItem('likes', JSON.stringify(Array.from(likes)));
+}
+
+async function handleShowLikes() {
+  moviesContainer.innerHTML = '';
+  
+  if (likes.size === 0) {
+    moviesContainer.classList.add('empty');
+    moviesContainer.innerHTML = '<p class="placeholder-text">You haven\'t liked any movies yet.</p>';
+    return;
+  }
+
+  await renderMoviesFromIDs(Array.from(likes).reverse());
+}
+
+async function handleShowWatchlist() {
   moviesContainer.innerHTML = '';
 
+  if (watchlist.size === 0) {
+    moviesContainer.classList.add('empty');
+    moviesContainer.innerHTML = '<p class="placeholder-text">Your watchlist is empty.</p>';
+    return;
+  }
+
+  await renderMoviesFromIDs(Array.from(watchlist).reverse());
+}
+
+async function handleSearch(searchTerm) {
+  moviesContainer.innerHTML = '';
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
+  const imdbIDs = searchResults.map(movie => movie.imdbID);
 
-
-  if (searchResults.length === 0) {
+  if (imdbIDs.length === 0) {
     moviesContainer.classList.add('empty');
     moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
     return;
   }
 
-  moviesContainer.classList.remove('empty');
+  await renderMoviesFromIDs(imdbIDs);
+}
 
-  for (const movie of searchResults) {
-    const movieDetails = await getMovieDetailsByID(movie.imdbID);
+async function renderMoviesFromIDs(imdbIDs) {
+  moviesContainer.classList.remove('empty');
+  for (const imdbID of imdbIDs) {
+    const movieDetails = await getMovieDetailsByID(imdbID);
 
     // Don't render movies with <50 IMDB votes if the movie year is in the past
     // This eliminates obscure movies w/o eliminating upcoming movies with no ratings
@@ -65,11 +119,12 @@ async function handleSearch(searchTerm) {
       break;
     }
 
-    const isInWatchlist = watchlist.has(movie.imdbID);
-    const movieHtml = renderMovie(movieDetails, isInWatchlist);
+    const isInWatchlist = watchlist.has(imdbID);
+    const isLiked = likes.has(imdbID);
+    const movieHtml = renderMovie(movieDetails, isInWatchlist, isLiked);
     moviesContainer.insertAdjacentHTML('beforeend', movieHtml);
     await delay(100); // Wait between requests to avoid rate limits
   }
 }
 
-fetchWatchlist();
+fetchLists();
