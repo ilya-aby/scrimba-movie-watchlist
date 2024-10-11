@@ -50,10 +50,30 @@ header h1 {
   display: inline;
 }
 
-.movie-rating, .movie-runtime, .movie-genre, .movie-year {
+.movie-rating, .movie-runtime, .movie-genre, .movie-year, .movie-metascore {
   font-size: 0.75rem;
   font-weight: 400;
   white-space: nowrap;
+}
+
+.movie-metascore {
+  border-radius: 2px;
+  padding: 2px 4px;
+}
+
+.movie-metascore.low {
+  background-color: #ff6874;
+  color: #ffffff;
+}
+
+.movie-metascore.medium {
+  background-color: #ffbd3f;
+  color: #262626;
+}
+
+.movie-metascore.high {
+  background-color: #00CE7A;
+  color: #262626;
 }
 
 .movie-year {
