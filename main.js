@@ -13,20 +13,16 @@ document.getElementById('search-container').addEventListener('submit', async fun
 });
 
 document.getElementById('movies-container').addEventListener('click', function(e) {
-  const button = e.target.closest('.watchlist-button');
-  if (button) {
-    const imdbID = button.dataset.imdbid;
+  const watchlistButton = e.target.closest('.watchlist-button');
+  const likeButton = e.target.closest('.like-button');
+  if (watchlistButton) {
+    const imdbID = watchlistButton.dataset.imdbid;
     handleWatchlistUpdate(imdbID);
-    button.classList.toggle('in-watchlist');
-  }
-});
-
-document.getElementById('movies-container').addEventListener('click', function(e) {
-  const button = e.target.closest('.like-button');
-  if (button) {
-    const imdbID = button.dataset.imdbid;
+    watchlistButton.classList.toggle('in-watchlist');
+  } else if (likeButton) {
+    const imdbID = likeButton.dataset.imdbid;
     handleLikeUpdate(imdbID);
-    button.classList.toggle('in-likes');
+    likeButton.classList.toggle('in-likes');
   }
 });
 

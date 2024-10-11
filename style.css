@@ -177,6 +177,7 @@ main {
 
 .movie-poster {
   width: 20%;
+  aspect-ratio: 2 / 3;
   height: auto;
   min-height: 150px;
   object-fit: cover;
