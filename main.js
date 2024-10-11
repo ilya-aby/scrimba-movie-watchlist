@@ -73,12 +73,12 @@ async function handleShowTopFilms() {
 }
 
 async function handleSearch(searchTerm) {
+  moviesContainer.classList.add('empty');
   moviesContainer.innerHTML = '<div class="spinner loading"></div>';
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
   const imdbIds = searchResults.map(movie => movie.imdbID);
 
   if (imdbIds.length === 0) {
-    moviesContainer.classList.add('empty');
     moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
     return;
   }
