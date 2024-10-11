@@ -260,6 +260,34 @@ main {
   height: auto;
 }
 
+/* Spinner */
+.spinner {
+  display: none;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #f0963a;
+  animation: spin 1s ease-in-out infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner.loading {
+  display: block;
+}
+
+/* Add this to ensure the spinner is centered when it's the only child
+#movies-container.loading:not(.empty) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+} */
+
 @media (min-width: 768px) {
   header h1 {
     font-size: 2rem;

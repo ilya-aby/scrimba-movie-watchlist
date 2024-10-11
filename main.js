@@ -6,6 +6,7 @@ import { TOP_FILMS } from './top-films.js';
 
 const moviesContainer = document.getElementById('movies-container');
 const searchInput = document.getElementById('search-input');
+const spinner = document.querySelector('.spinner');
 let currentSearchTerm = '';
 
 document.getElementById('search-container').addEventListener('submit', async function(e) {
@@ -73,21 +74,25 @@ async function handleShowTopFilms() {
 
 async function handleSearch(searchTerm) {
   moviesContainer.innerHTML = '';
+  spinner.classList.add('loading');
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
   const imdbIds = searchResults.map(movie => movie.imdbID);
 
   if (imdbIds.length === 0) {
+    spinner.classList.remove('loading');
     moviesContainer.classList.add('empty');
     moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
     return;
   }
-
+  spinner.classList.remove('loading');
   await renderMoviesFromIDs(imdbIds, searchTerm);
+
   console.log('Search complete');
 }
 
 async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
   moviesContainer.classList.remove('empty');
+
   for (const imdbId of imdbIDs) {
     let movieDetails;
     let shouldRateLimit = false;
