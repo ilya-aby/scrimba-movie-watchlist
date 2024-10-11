@@ -6,6 +6,7 @@ import { TOP_FILMS } from './top-films.js';
 
 const moviesContainer = document.getElementById('movies-container');
 const searchInput = document.getElementById('search-input');
+let currentSearchTerm = '';
 
 document.getElementById('search-container').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -70,24 +71,33 @@ async function handleShowTopFilms() {
 }
 
 async function handleSearch(searchTerm) {
+  currentSearchTerm = searchTerm;
   moviesContainer.innerHTML = '';
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
-  const imdbIDs = searchResults.map(movie => movie.imdbID);
+  const imdbIds = searchResults.map(movie => movie.imdbID);
 
-  if (imdbIDs.length === 0) {
+  if (imdbIds.length === 0) {
     moviesContainer.classList.add('empty');
     moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
     return;
   }
 
-  await renderMoviesFromIDs(imdbIDs);
+  await renderMoviesFromIDs(imdbIds, searchTerm);
 }
 
-async function renderMoviesFromIDs(imdbIDs) {
+async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
   moviesContainer.classList.remove('empty');
   for (const imdbId of imdbIDs) {
     let movieDetails;
     let shouldRateLimit = false;
+
+    if (searchTerm && currentSearchTerm !== searchTerm) {
+      console.log('Search term changed, stopping render');
+      console.log('Current search term:', currentSearchTerm);
+      console.log('New search term:', searchTerm);
+      console.log(`${imdbId} not rendered and now aborting`);
+      return;
+    }
 
     if (cache[imdbId]) {
       movieDetails = cache[imdbId];
