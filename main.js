@@ -112,3 +112,9 @@ async function renderMoviesFromIDs(imdbIDs) {
 }
 
 fetchLists();
+
+// Canary test for serverless function
+fetch('/.netlify/functions/movieFetch?searchTerm=Inception')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
