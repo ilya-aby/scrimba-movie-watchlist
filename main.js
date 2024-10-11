@@ -79,6 +79,7 @@ async function handleSearch(searchTerm) {
   const imdbIds = searchResults.map(movie => movie.imdbID);
 
   if (imdbIds.length === 0) {
+    moviesContainer.classList.add('empty');
     moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
     return;
   }
@@ -89,8 +90,6 @@ async function handleSearch(searchTerm) {
 }
 
 async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
-  
-
   for (const imdbId of imdbIDs) {
     let movieDetails;
     let shouldRateLimit = false;
