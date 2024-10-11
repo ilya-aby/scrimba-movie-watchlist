@@ -194,4 +194,13 @@ main {
   cursor: pointer;
 }
 
+/* Styles when the button is in the watchlist */
+.watchlist-button.in-watchlist {
+  background-color: #00AC1C; /* Green background */
+}
+
+.watchlist-button:hover {
+  opacity: 0.5;
+}
+
 

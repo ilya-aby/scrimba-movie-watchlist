@@ -15,6 +15,7 @@ document.getElementById('movies-container').addEventListener('click', function(e
   if (e.target.classList.contains('watchlist-button')) {
     const imdbID = e.target.dataset.imdbid;
     handleWatchlistUpdate(imdbID);
+    e.target.classList.toggle('in-watchlist');
   }
 });
 
@@ -54,7 +55,8 @@ async function handleSearch(searchTerm) {
       break;
     }
 
-    const movieHtml = renderMovie(movieDetails);
+    const isInWatchlist = watchlist.has(movie.imdbID);
+    const movieHtml = renderMovie(movieDetails, isInWatchlist);
     moviesContainer.insertAdjacentHTML('beforeend', movieHtml);
     await delay(100); // Wait between requests to avoid rate limits
   }
