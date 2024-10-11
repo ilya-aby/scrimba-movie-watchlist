@@ -6,7 +6,7 @@ export function renderMovies(movies) {
     }
 
     return `
-      <div class="movie">
+      <div class="movie" data-imdbid="${movie.imdbID}">
         <img class="movie-poster" src="${movie.Poster}" alt="${movie.Title}">
         <div class="movie-info">
           <div class="movie-header">

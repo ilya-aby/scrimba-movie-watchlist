@@ -1,5 +1,9 @@
 const API_URL = 'https://www.omdbapi.com/';
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Get movies by search term. Since the search endpoint returns only basic movie information,
 // we need to make a second request for each movie to get the full details.
 export async function getMoviesBySearchTerm(searchTerm) {
@@ -17,8 +21,15 @@ export async function getMoviesBySearchTerm(searchTerm) {
   const moviesWithPosters = data.Search.filter(movie => movie.Poster !== "N/A");
 
   // We have to wait for each promise to resolve before adding it to the array
-  const detailMoviePromises = moviesWithPosters.map((movie) => getMovieDetailsByID(movie.imdbID));
-  const detailMovieResults = await Promise.all(detailMoviePromises);
+  // const detailMoviePromises = moviesWithPosters.map((movie) => getMovieDetailsByID(movie.imdbID));
+  // const detailMovieResults = await Promise.all(detailMoviePromises);
+
+  const detailMovieResults = [];
+  for (const movie of moviesWithPosters) {
+    const detail = await getMovieDetailsByID(movie.imdbID);
+    detailMovieResults.push(detail);
+    await delay(50); // Wait 50ms between requests
+  }
 
   return detailMovieResults;
 }

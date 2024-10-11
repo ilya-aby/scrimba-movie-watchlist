@@ -36,6 +36,27 @@ header a:hover {
   opacity: 0.5;
 }
 
+.movie-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  display: inline;
+}
+
+.movie-rating, .movie-runtime, .movie-genre, .movie-year {
+  font-size: 0.75rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.movie-year {
+  color: #A5A5A5;
+}
+
+.movie-description {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #A5A5A5;
+}
 
 /* Layout */
 
@@ -45,7 +66,8 @@ header a:hover {
   height: 100%;
   align-items: center;
   justify-content: space-between;
-  width: 550px;
+  width: 100%;
+  max-width: 550px;
   margin: 0 auto;
 }
 
@@ -161,22 +183,6 @@ main {
   gap: 18px;
 }
 
-.movie-title {
-  font-size: 1.125rem;
-  font-weight: 500;
-  display: inline;
-}
-
-.movie-rating, .movie-runtime, .movie-genre, .movie-year {
-  font-size: 0.75rem;
-  font-weight: 400;
-  white-space: nowrap;
-}
-
-.movie-year {
-  color: #A5A5A5;
-}
-
 .movie-button {
   font-size: 0.75rem;
   font-weight: 400;
@@ -188,9 +194,4 @@ main {
   cursor: pointer;
 }
 
-.movie-description {
-  font-size: 0.875rem;
-  font-weight: 400;
-  color: #A5A5A5;
-}
 
