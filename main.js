@@ -4,14 +4,40 @@ import { renderMovie } from './render.js';
 
 const moviesContainer = document.getElementById('movies-container');
 const searchInput = document.getElementById('search-input');
+let watchlist
+
+document.getElementById('search-container').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  await handleSearch(searchInput.value);
+});
+
+document.getElementById('movies-container').addEventListener('click', function(e) {
+  if (e.target.classList.contains('watchlist-button')) {
+    const imdbID = e.target.dataset.imdbid;
+    handleWatchlistUpdate(imdbID);
+  }
+});
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-document.getElementById('search-container').addEventListener('submit', async function(e) {
-  e.preventDefault();
+function fetchWatchlist() {
+  watchlist = new Set(JSON.parse(localStorage.getItem('watchlist')) || []);
+}
 
+function handleWatchlistUpdate(imdbID) {
+  if (watchlist.has(imdbID)) {
+    watchlist.delete(imdbID);
+  } else {
+    watchlist.add(imdbID);
+  }
+
+  // Save the updated watchlist
+  localStorage.setItem('watchlist', JSON.stringify(Array.from(watchlist)));
+}
+
+async function handleSearch(searchTerm) {
   // Clear the movies container  
   moviesContainer.innerHTML = '';
 
@@ -20,8 +46,8 @@ document.getElementById('search-container').addEventListener('submit', async fun
   for (const movie of searchResults) {
     const movieDetails = await getMovieDetailsByID(movie.imdbID);
 
-    // Do not render movies with less than 50 IMDB votes if the movie year is prior to the current year
-    // This eliminates obscure movies without eliminating upcoming movies that haven't been released yet
+    // Don't render movies with <50 IMDB votes if the movie year is in the past
+    // This eliminates obscure movies w/o eliminating upcoming movies with no ratings
     const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
     const currentYear = new Date().getFullYear();
     if ((isNaN(imdbVotes) || imdbVotes < 50) && parseInt(movieDetails.Year) < currentYear) {
@@ -30,6 +56,8 @@ document.getElementById('search-container').addEventListener('submit', async fun
 
     const movieHtml = renderMovie(movieDetails);
     moviesContainer.insertAdjacentHTML('beforeend', movieHtml);
-    await delay(75); // Wait between requests to avoid rate limits
+    await delay(100); // Wait between requests to avoid rate limits
   }
-});
+}
+
+fetchWatchlist();

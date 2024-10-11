@@ -24,15 +24,15 @@ header h1 {
 
 }
 
-header a {
-  display: inline-block;
+header a, .movie-header a {
+  /* display: inline-block; */
   font-weight: 600;
   font-size: 0.75rem;
   text-decoration: none;
   color: inherit;
 }
 
-header a:hover {
+header a:hover, .movie-header a:hover {
   opacity: 0.5;
 }
 
@@ -183,7 +183,7 @@ main {
   gap: 18px;
 }
 
-.movie-button {
+.watchlist-button {
   font-size: 0.75rem;
   font-weight: 400;
   border: none;
