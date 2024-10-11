@@ -1,11 +1,10 @@
-export function renderMovies(movies) {
+export function renderMovie(movie) {
 
-  const movieHtml = movies.map(movie => {
-    if (!movie) {
-      return '';
-    }
+  if (!movie) {
+    return '';
+  }   
 
-    return `
+  return `
       <div class="movie" data-imdbid="${movie.imdbID}">
         <img class="movie-poster" src="${movie.Poster}" alt="${movie.Title}">
         <div class="movie-info">
@@ -23,8 +22,5 @@ export function renderMovies(movies) {
         </div>
       </div>
     `;
-  }).join('');
-  
-  return movieHtml;
 
 }
