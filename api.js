@@ -29,7 +29,7 @@ export async function getMovieDetailsById(imdbId) {
     const response = await fetch(url);
 
     if (!response.ok) {
-      console.error(`Network response was not ok: ${response.statusText}`);
+      console.error(`Network response was not ok`);
       return null;
     }
 

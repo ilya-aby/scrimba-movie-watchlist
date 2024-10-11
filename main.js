@@ -93,10 +93,8 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
     let shouldRateLimit = false;
 
     if (searchTerm && currentSearchTerm !== searchTerm) {
-      console.log('Search term changed, stopping render');
-      console.log('Old search term:', currentSearchTerm);
-      console.log('New search term:', searchTerm);
-      console.log(`${imdbId} not rendered and now aborting`);
+      console.warn(`Search term changed, stopping render of ${imdbId} to prevent stale results`);
+      console.warn(`${currentSearchTerm} -> ${searchTerm}`);
       return;
     }
 
