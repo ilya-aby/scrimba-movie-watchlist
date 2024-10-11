@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 exports.handler = async (event, context) => {
   const API_KEY = process.env.OMDB_API_KEY; // Store your key in environment variables for security
   const { searchTerm } = event.queryStringParameters;
