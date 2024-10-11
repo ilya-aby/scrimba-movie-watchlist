@@ -1,11 +1,12 @@
 import { updateCache } from './storage.js';
 
-const API_URL = 'https://www.omdbapi.com/';
+// URL for our serverless function that proxies OMDB requests
+const API_URL = '/.netlify/functions/movieFetch';
 
 // Get movies by search term. Since the search endpoint returns only basic movie information,
 // we need to make a second request for each movie to get the full details.
 export async function getMoviesBySearchTerm(searchTerm) {
-  const url = `${API_URL}?s=${searchTerm}&apikey=${API_KEY}&type=movie`;
+  const url = `${API_URL}?searchTerm=${encodeURIComponent(searchTerm)}`;
   const response = await fetch(url);
   const data = await response.json();
 
@@ -21,12 +22,10 @@ export async function getMoviesBySearchTerm(searchTerm) {
   return filteredMovies;
 }
 
-// Get movie details by IMDB ID
-// If the movie is in the cache, return it from the cache
-// Otherwise, fetch the movie details from the API and add them to the cache
+// Get movie details by IMDB ID & store in cache
 export async function getMovieDetailsById(imdbId) {
   try {
-    const url = `${API_URL}?i=${imdbId}&apikey=${API_KEY}`;
+    const url = `${API_URL}?imdbId=${imdbId}`;
     const response = await fetch(url);
     const data = await response.json();
     console.log("Movie details:", data);
