@@ -31,10 +31,6 @@ header h1 {
   color: inherit;
 }
 
-.movie-header a:hover {
-  opacity: 0.5;
-}
-
 .placeholder-text {
   font-size: 1.125rem;
   font-weight: 700;
@@ -229,15 +225,6 @@ main {
   color: #f0963a;
 }
 
-.watchlist-button:hover, .like-button:hover, .top-films-button:hover {
-  opacity: 0.5;
-}
-
-/* Reset opacity on tap for mobile */
-.watchlist-button:active, .like-button:active, .top-films-button:active {
-  opacity: 1; 
-}
-
 #header-action-buttons, .movie-action-buttons {
   display: flex;
   flex-direction: row;
@@ -297,5 +284,12 @@ main {
 
   .movie-description {
     font-size: 0.875rem;
+  }
+
+  /* Only apply hover styles on devices that support hover to avoid mobile touch issues */
+  @media (hover: hover) {
+    .watchlist-button:hover, .like-button:hover, .top-films-button:hover, .movie-title:hover {
+      opacity: 0.5;
+    }
   }
 }

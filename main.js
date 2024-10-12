@@ -6,11 +6,12 @@ import { TOP_FILMS } from './top-films.js';
 
 const moviesContainer = document.getElementById('movies-container');
 const searchInput = document.getElementById('search-input');
-const spinner = document.querySelector('.spinner');
+
 let currentSearchTerm = '';
 
 document.getElementById('search-container').addEventListener('submit', async function(e) {
   e.preventDefault();
+  e.target.blur(); // Remove focus from the search input to dismiss the on-screen keyboard on mobile
   currentSearchTerm = searchInput.value;
   await handleSearch(currentSearchTerm);
 });
