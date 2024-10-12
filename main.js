@@ -78,11 +78,11 @@ async function handleSearch(searchTerm) {
   const searchResults = await getMoviesBySearchTerm(searchInput.value);
   const imdbIds = searchResults.map(movie => movie.imdbID);
 
-  if (imdbIds.length === 0) {
-    moviesContainer.classList.add('empty');
-    moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
-    return;
-  }
+  // if (imdbIds.length === 0) {
+  //   moviesContainer.classList.add('empty');
+  //   moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
+  //   return;
+  // }
 
   await renderMoviesFromIDs(imdbIds, searchTerm);
 
@@ -90,6 +90,7 @@ async function handleSearch(searchTerm) {
 }
 
 async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
+  let renderedAtLeastOneMovie = false;
   for (const imdbId of imdbIDs) {
     let movieDetails;
     let shouldRateLimit = false;
@@ -105,14 +106,6 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
       console.error(`Skipping movie ${imdbId} due to failed fetch or error response`);
       continue;
     }
-
-    // Remove the search spinner after at least one movie has been fetched
-    const spinner = document.querySelector('.spinner');
-    if (spinner) {
-      spinner.classList.remove('loading');
-    }
-
-    moviesContainer.classList.remove('empty');
 
     // It's possible that the search term changed while we were waiting for our promise to resolve
     // because the underlying API is flaky and can take a while to respond for certain films
@@ -131,9 +124,23 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
       break;
     }
 
+    renderedAtLeastOneMovie = true;
+    // Remove the search spinner after at least one movie has been rendered
+    const spinner = document.querySelector('.spinner');
+    if (spinner) {
+      spinner.classList.remove('loading');
+    }
+    moviesContainer.classList.remove('empty');
+
     const movieHtml = renderMovie(movieDetails, watchlist.has(imdbId), likes.has(imdbId));
     moviesContainer.insertAdjacentHTML('beforeend', movieHtml);
     await delay(shouldRateLimit ? 100 : 0); // Wait between requests to avoid rate limits
+  }
+
+  // Handle case where search results were empty or only contained movies that we skipped
+  if (!renderedAtLeastOneMovie) {
+    moviesContainer.classList.add('empty');
+    moviesContainer.innerHTML = '<p class="placeholder-text">We couldn\'t find any results for that search. Please try again.</p>';
   }
 }
 
