@@ -11,7 +11,7 @@ let currentSearchTerm = '';
 
 document.getElementById('search-container').addEventListener('submit', async function(e) {
   e.preventDefault();
-  e.target.blur(); // Remove focus from the search input to dismiss the on-screen keyboard on mobile
+  document.activeElement.blur(); // Remove focus from the search input to dismiss the on-screen keyboard on mobile
   currentSearchTerm = searchInput.value;
   await handleSearch(currentSearchTerm);
 });
