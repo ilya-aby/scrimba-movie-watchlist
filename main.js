@@ -40,10 +40,6 @@ document.getElementById('open-top-films').addEventListener('click', function() {
   handleShowTopFilms();
 });
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function handleShowLikes() {
   moviesContainer.innerHTML = '';
   
@@ -130,7 +126,6 @@ async function renderMoviesFromIDs(imdbIDs, searchTerm=null) {
 
     const movieHtml = renderMovie(movieDetails, watchlist.has(imdbId), likes.has(imdbId));
     moviesContainer.insertAdjacentHTML('beforeend', movieHtml);
-    await delay(shouldRateLimit ? 100 : 0); // Wait between requests to avoid rate limits
   }
 
   // Handle case where search results were empty or only contained movies that we skipped
