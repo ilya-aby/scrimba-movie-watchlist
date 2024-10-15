@@ -29,14 +29,17 @@ document.getElementById('movies-container').addEventListener('click', function(e
 });
 
 document.getElementById('open-watchlist').addEventListener('click', function() {
+  searchInput.value = '';
   handleShowWatchlist();
 });
 
 document.getElementById('open-likes').addEventListener('click', function() {
+  searchInput.value = '';
   handleShowLikes();
 });
 
 document.getElementById('open-top-films').addEventListener('click', function() {
+  searchInput.value = '';
   handleShowTopFilms();
 });
 
